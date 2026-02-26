@@ -1,3 +1,4 @@
 fastapi[standard]==0.133.0
 pydantic==2.12.5
-
+black==26.1.0
+asyncpg==0.31.0
