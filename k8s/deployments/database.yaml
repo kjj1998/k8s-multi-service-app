@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-deployment
+  labels:
+    app: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      strategy:
+        type: Recreate
+      volumes:
+        - name: database-pv-storage
+          persistentVolumeClaim:
+            claimName: k8s-multi-service-app-pv-claim
+        - name: init-db-script
+          configMap:
+            name: init-db-config
+      containers:
+        - name: database
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: app
+          image: postgres:17
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - "until pg_isready -U postgres; do sleep 1; done && psql -U postgres -d app -f /docker-entrypoint-initdb.d/init.sql"
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: database-pv-storage
+            - mountPath: /docker-entrypoint-initdb.d/
+              name: init-db-script
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: database
+  clusterIP: None

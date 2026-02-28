@@ -15,8 +15,18 @@ spec:
         app: backend
     spec:
       containers:
-      - name: backend
-        image: ${DOCKERHUB_USERNAME}/k8s-multi-service-app:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8000
+        - name: backend
+          image: k8s-multi-service-app:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DB_HOST
+              value: database-service
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

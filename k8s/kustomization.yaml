@@ -1,0 +1,12 @@
+resources:
+  - deployments/backend.yaml
+  - deployments/database.yaml
+  - services/loadBalancer.yaml
+  - storage/pv.yaml
+  - storage/pv-claim.yaml
+  - configmaps/init-db.yaml
+
+images:
+  - name: k8s-multi-service-app
+    newName: junjiekoh/k8s-multi-service-app
+    newTag: latest
