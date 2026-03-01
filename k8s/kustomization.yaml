@@ -10,3 +10,9 @@ images:
   - name: k8s-multi-service-app
     newName: your-docker-hub-username/k8s-multi-service-app
     newTag: latest
+
+secretGenerator:
+  - name: database-creds
+    literals:
+      - username=postgres
+      - password=postgres

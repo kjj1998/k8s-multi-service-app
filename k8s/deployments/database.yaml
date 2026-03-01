@@ -27,9 +27,15 @@ spec:
         - name: database
           env:
             - name: POSTGRES_USER
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: database-creds
+                  key: username
             - name: POSTGRES_PASSWORD
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: database-creds
+                  key: password
             - name: POSTGRES_DB
               value: app
           image: postgres:17
