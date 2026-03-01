@@ -8,5 +8,5 @@ resources:
 
 images:
   - name: k8s-multi-service-app
-    newName: junjiekoh/k8s-multi-service-app
+    newName: your-docker-hub-username/k8s-multi-service-app
     newTag: latest
